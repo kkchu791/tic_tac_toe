@@ -1,3 +1,5 @@
+require "pry-byebug"
+
 class MatrixRenderer
   BOARD = {
             1 => {row: 0, col: 0},
@@ -13,25 +15,26 @@ class MatrixRenderer
 
   class << self
     def display_board(matrix)
-      add_numbers(matrix)
-
-      display_board = ""
-      matrix.each_with_index do |row, index|
-        display_board += row.join(" | ") + "\n"
-        display_board += "---------" + "\n" unless index == 2
-      end
-
-      puts display_board
+      new_matrix = create_new_matrix_with_numbers(matrix)
+      puts "\n" + visual_board(new_matrix) +"\n"
     end
 
     private
 
-    def add_numbers(matrix)
-      (1..9).each do |num|
-        if  matrix[BOARD[num][:row]][BOARD[num][:col]].nil?
-           matrix[BOARD[num][:row]][BOARD[num][:col]] = num
-        end
+    def create_new_matrix_with_numbers(matrix)
+      (1..9).map do |num|
+        cell = matrix[BOARD[num][:row]][BOARD[num][:col]]
+        cell.nil? ? num : cell
+      end.each_slice(3).to_a
+    end
+
+    def visual_board(matrix)
+      board = ""
+      matrix.each_with_index do |row, index|
+        board += row.join(" | ") + "\n"
+        board += "---------" + "\n" unless index == 2
       end
+      board
     end
   end
 end
